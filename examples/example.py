@@ -1,4 +1,4 @@
-from TTree2pyTables.TTree_converter import convert_tree
+from JudithTTree2PyTables.TTree_converter import convert_tree
 
 tree_file = r'example.root'  # Input file
 output_folder = r'./'  # Set output folder for created files

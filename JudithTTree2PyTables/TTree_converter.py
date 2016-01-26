@@ -1,7 +1,7 @@
 'This file implements the only function that needs to be called and example for the TTRee2pyTables converter'
 
 from ROOT import TFile
-from TTree2pyTables.converter import read_from_root_tree
+from JudithTTree2PyTables.converter import read_from_root_tree
 import tables as tb
 
 

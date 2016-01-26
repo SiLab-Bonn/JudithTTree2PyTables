@@ -10,7 +10,7 @@ cflags = check_output(['root-config', '--cflags'])[:-1]
 lflags = check_output(['root-config', '--ldflags', '--glibs'])[:-1]
 
 extensions = [
-    Extension('JudihtTTree2PyTables.converter', sources=['JudithTTree2PyTables/converter.pyx'], language="c++", extra_compile_args=cflags.split(), extra_link_args=lflags.split())
+    Extension('JudithTTree2PyTables.converter', sources=['JudithTTree2PyTables/converter.pyx'], language="c++", extra_compile_args=cflags.split(), extra_link_args=lflags.split())
 ]
 
 version = '1.0.0'

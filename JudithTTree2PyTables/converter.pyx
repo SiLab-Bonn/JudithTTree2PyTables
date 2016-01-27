@@ -12,7 +12,7 @@ from libcpp.vector cimport vector as std_vector
 
 cnp.import_array()  # if array is used it has to be imported, otherwise possible runtime error
 
-# define struct of vector
+# declaration imported from C++ source file (C++ header file should be used), do not add source file to setup.py
 cdef extern from "converter_src.cpp":
     struct data_row:
         cnp.int64_t event_number

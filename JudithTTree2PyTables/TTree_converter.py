@@ -1,12 +1,15 @@
 'This file implements the only function that needs to be called and example for the TTRee2pyTables converter'
 
-from ROOT import TFile
-from JudithTTree2PyTables.converter import read_from_root_tree
 import tables as tb
+import os.path
+
+from ROOT import TFile
+
+from JudithTTree2PyTables.converter import read_from_root_tree
 
 
 # import this function for use in scripts
-def convert_tree(tree_file, plane_list, output_folder):
+def convert_tree(tree_file, plane_list, output_folder=None):
     '''
     Convert hit information from ROOT file to one pyTables file for each plane.
 
@@ -21,7 +24,10 @@ def convert_tree(tree_file, plane_list, output_folder):
     '''
 
     # set output file name
-    data_file = output_folder + r'/DUT.h5'
+    if not output_folder:
+        output_folder = os.path.dirname(tree_file)
+    file_name = os.path.splitext(os.path.split(tree_file)[1])[0]
+    file_root = os.path.join(output_folder, file_name)
 
     for plane_number in plane_list:
 
@@ -37,7 +43,7 @@ def convert_tree(tree_file, plane_list, output_folder):
             data['row'][:] += 1
 
             # create pyTables file
-            with tb.open_file(data_file[:-3] + str(plane_number) + '-converted.h5', 'w') as out_file_h5:
+            with tb.open_file(file_root + '_plane' + str(plane_number) + '.h5', 'w') as out_file_h5:
                 out_file_h5 = out_file_h5.createTable(out_file_h5.root, name='Hits', description=data.dtype, title='Converted data from ROOT file', filters=tb.Filters(complib='blosc', complevel=5, fletcher32=False))
                 out_file_h5.append(data)
 

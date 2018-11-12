@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from setuptools import setup, find_packages, Extension  # This setup relies on setuptools since distutils is insufficient and badly hacked code
+from setuptools import setup, find_packages, Extension
 from Cython.Build import cythonize
 
 import numpy as np
@@ -10,7 +10,11 @@ cflags = check_output(['root-config', '--cflags'])[:-1]
 lflags = check_output(['root-config', '--ldflags', '--glibs'])[:-1]
 
 extensions = [
-    Extension('JudithTTree2PyTables.converter', sources=['JudithTTree2PyTables/converter.pyx'], language="c++", extra_compile_args=cflags.split(), extra_link_args=lflags.split())
+    Extension(
+        'JudithTTree2PyTables.converter',
+        sources=['JudithTTree2PyTables/converter.pyx'],
+        language="c++", extra_compile_args=cflags.split(),
+        extra_link_args=lflags.split())
 ]
 
 version = '1.0.0'

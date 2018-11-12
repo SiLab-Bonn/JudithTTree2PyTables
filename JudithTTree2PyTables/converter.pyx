@@ -21,7 +21,7 @@ cdef extern from "converter_src.cpp":
         cnp.uint16_t row
         cnp.uint16_t charge
 
-    void read_tree(const char *tree_file, int plane_number, std_vector[data_row]& data) except +
+    void read_tree(const char * tree_file, int plane_number, std_vector[data_row] & data) except +
 
 
 cdef data_type = cnp.dtype([('event_number', np.int64), ('frame', np.uint8), ('column', np.uint16), ('row', np.uint16), ('charge', np.uint16)])
@@ -44,13 +44,13 @@ def read_from_root_tree(tree_file, plane_number):
         return
 
     # if plane exists and data is converted, format data to numpy array
-    data_array = hit_data_to_numpy_array(&my_data[0], my_data.size() * sizeof(data_row))
+    data_array = hit_data_to_numpy_array(& my_data[0], my_data.size() * sizeof(data_row))
     return data_array
 
 
-cdef hit_data_to_numpy_array(void* ptr, cnp.npy_intp N):
+cdef hit_data_to_numpy_array(void * ptr, cnp.npy_intp N):
     # use copy because vector my_data will be deleted when returning read_from_root_tree function
-    cdef cnp.ndarray[data_row, ndim = 1] formatted = cnp.PyArray_SimpleNewFromData(1, <cnp.npy_intp*> &N, cnp.NPY_INT8, <void*> ptr).view(data_type).copy()
+    cdef cnp.ndarray[data_row, ndim=1] formatted = cnp.PyArray_SimpleNewFromData(1, <cnp.npy_intp*> & N, cnp.NPY_INT8, <void*> ptr).view(data_type).copy()
     formatted.setflags(write=True)  # protect the hit data
     PyArray_ENABLEFLAGS(formatted, cnp.NPY_OWNDATA)
     return formatted

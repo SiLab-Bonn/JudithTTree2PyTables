@@ -44,7 +44,7 @@ def convert_tree(tree_file, plane_list, output_folder=None):
 
             # create pyTables file
             with tb.open_file(file_root + '_plane' + str(plane_number) + '.h5', 'w') as out_file_h5:
-                out_file_h5 = out_file_h5.createTable(out_file_h5.root, name='Hits', description=data.dtype, title='Converted data from ROOT file', filters=tb.Filters(complib='blosc', complevel=5, fletcher32=False))
+                out_file_h5 = out_file_h5.create_table(out_file_h5.root, name='Hits', description=data.dtype, title='Converted data from ROOT file', filters=tb.Filters(complib='blosc', complevel=5, fletcher32=False))
                 out_file_h5.append(data)
 
 

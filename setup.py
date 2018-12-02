@@ -11,9 +11,10 @@ lflags = check_output(['root-config', '--ldflags', '--glibs'])[:-1]
 
 extensions = [
     Extension(
-        'JudithTTree2PyTables.converter',
-        sources=['JudithTTree2PyTables/converter.pyx'],
-        language="c++", extra_compile_args=cflags.split(),
+        'JudithTTree2pyBARPyTables.converter',
+        sources=['JudithTTree2pyBARPyTables/converter.pyx'],
+        language="c++",
+        extra_compile_args=cflags.split(),
         extra_link_args=lflags.split())
 ]
 
@@ -24,9 +25,9 @@ author_email = 'janssen@physik.uni-bonn.de, christian.bespin@uni-bonn.de'
 install_requires = ['cython', 'numpy', 'tables']
 
 setup(
-    name='JudithTTree2PyTables',
+    name='JudithTTree2pyBARPyTables',
     version=version,
-    description='Converting Judith ROOT TTree to PyTables',
+    description='Converting Judith ROOT TTree to pyBAR PyTables',
     url='',
     long_description='',
     author=author,
@@ -39,6 +40,6 @@ setup(
     package_data={'': ['README.*', 'VERSION'], 'docs': ['*'], 'examples': ['*']},
     ext_modules=cythonize(extensions),
     include_dirs=[np.get_include()],
-    keywords=['ROOT', 'Numpy', 'Converter', 'Tables', 'HDF5'],
+    keywords=['ROOT', 'Numpy', 'Converter', 'PyTables', 'HDF5'],
     platforms='any'
 )

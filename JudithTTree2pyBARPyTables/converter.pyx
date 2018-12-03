@@ -14,7 +14,7 @@ cnp.import_array()  # if array is used it has to be imported, otherwise possible
 
 
 # declaration imported from C++ source file (C++ header file should be used), do not add source file to setup.py
-cdef extern from "converter_src.cpp":
+cdef extern from "read_tree.cpp":
     struct data_row:
         cnp.int64_t event_number
         cnp.uint8_t frame

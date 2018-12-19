@@ -6,47 +6,50 @@ from converter import read_from_root_tree
 
 
 # import this function for use in scripts
-def convert_tree(input_file, planes, output_folder=None):
+def convert_tree(input_filename, plane, output_filename=None):
     '''
-    Convert hit information from ROOT file to one pyTables file for each plane.
+    Convert hit information in a ROOT TTree to PyTables table.
 
     Parameters
     ----------
-    input_file: string
+    input_filename : string
         Fileanme of the input ROOT file.
-    planes: list of strings
-        Index of plane that shall be converted
-    output_folder: string
-        Folder where to store converted pyTables files.
+    planes : string
+        Name of the TTree, e.g. "Plane0".
+    output_filename : string
+        Filename of the output PyTables file.
 
+    Returns
+    -------
+    output_filename : string
+        Filename of the output PyTables file.
     '''
-    # set output file name
-    if output_folder is None:
-        output_folder = os.path.dirname(input_file)
-    file_name = os.path.splitext(os.path.split(input_file)[1])[0]
-    file_root = os.path.join(output_folder, file_name)
+    # set output filename
+    if output_filename is None:
+        output_filename = os.path.splitext(input_filename)[0] + '_' + plane + '.h5'
 
-    for plane in planes:
-        # get data from ROOT file
-        data = read_from_root_tree(input_file, plane)
+    # get data from ROOT file
+    data = read_from_root_tree(input_filename, plane)
 
-        # check if any data is returned (None when selected plane does not exist)
-        if data is None:
-            continue
-        else:
-            # keep standard format for hit table
-            data['column'][:] += 1
-            data['row'][:] += 1
+    # check if any data is returned (None when selected plane does not exist)
+    if data is not None:
+        # keep standard format for hit table
+        data['column'][:] += 1
+        data['row'][:] += 1
 
-            # create pyTables file
-            with tb.open_file(filename=file_root + '_' + plane + '.h5', mode='w') as out_file_h5:
-                out_file_h5 = out_file_h5.create_table(
-                    where=out_file_h5.root,
-                    name='Hits',
-                    description=data.dtype,
-                    title='Converted data from Judith ROOT TTree',
-                    filters=tb.Filters(
-                        complib='blosc',
-                        complevel=5,
-                        fletcher32=False))
-                out_file_h5.append(data)
+        # create pyTables file
+        with tb.open_file(filename=output_filename, mode='w') as out_file_h5:
+            out_file_h5 = out_file_h5.create_table(
+                where=out_file_h5.root,
+                name='Hits',
+                description=data.dtype,
+                title='Converted data from Judith ROOT TTree',
+                filters=tb.Filters(
+                    complib='blosc',
+                    complevel=5,
+                    fletcher32=False))
+            out_file_h5.append(data)
+    else:
+        raise ValueError("invalid plane %s" % plane)
+
+    return output_filename

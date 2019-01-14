@@ -27,7 +27,7 @@ cdef extern from "read_tree.cpp":
         cnp.uint16_t event_status
         cnp.int64_t pybar_event_number
 
-    void read_tree(const char * input_file, const char * plane, std_vector[data_row] & data) except +
+    void read_tree(const char * input_file, const char * plane, std_vector[data_row] & data, const int64_t start, const int64_t stop) except +
 
 
 cdef data_type = cnp.dtype([
@@ -49,12 +49,12 @@ cdef extern from "numpy/arrayobject.h":
     void PyArray_ENABLEFLAGS(cnp.ndarray arr, int flags)
 
 
-def read_from_root_tree(input_file, plane):
+def read_from_root_tree(input_filename, plane, start=0, stop=0):
     # vector is initialized here
     cdef std_vector[data_row] my_data
 
     # call c++ function
-    read_tree(< const char * > input_file, < const char * > plane, < std_vector[data_row] & > my_data)
+    read_tree(< const char * > input_filename, < const char * > plane, < std_vector[data_row] & > my_data, < const int64_t > start, < const int64_t > stop)
 
     # Return nothing if selected plane does not exist
     if my_data.size() == 0:

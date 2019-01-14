@@ -35,7 +35,7 @@ struct data_row {
 
 #pragma pack(pop)  // pop needed to suppress VS C4103 compiler warning
 
-void read_tree(const char * input_file, const char * plane, std::vector<data_row>& data) {
+void read_tree(const char * input_file, const char * plane, std::vector<data_row>& data, const int64_t start=0, const int64_t stop=0) {
 	static const Int_t MAX_HITS = 4000;
 	// open ROOT file
 	TFile* root_file = (TFile*) new TFile(input_file, "READ");
@@ -81,8 +81,10 @@ void read_tree(const char * input_file, const char * plane, std::vector<data_row
 		hits->SetBranchAddress("TriggerStatus", trigger_status);
 		hits->SetBranchAddress("EventStatus", event_status);
 
-		Long64_t n_entries = hits->GetEntriesFast();
-		for (Long64_t i = 0; i < n_entries; i++) {
+		Int_t n_entries = hits->GetEntriesFast();
+		for (Int_t i = start; i < n_entries; i++) {
+			if (stop != 0 && i >= stop)
+				break;
 			// get values of selected branches
 			event->GetEntry(i);
 			hits->GetEntry(i);
@@ -91,8 +93,7 @@ void read_tree(const char * input_file, const char * plane, std::vector<data_row
 
 			// create new row for each hit in one event
 			for (Int_t iHit = 0; iHit < n_hits; iHit++) {
-				data.push_back(data_row(i, timing[iHit], pix_x[iHit], pix_y[iHit], value[iHit],
-					                    tdc_value[iHit], tdc_time_stamp[iHit], trigger_status[iHit], event_status[iHit], frame_number));
+				data.push_back(data_row(i, timing[iHit], pix_x[iHit], pix_y[iHit], value[iHit], tdc_value[iHit], tdc_time_stamp[iHit], trigger_status[iHit], event_status[iHit], frame_number));
 			}
 		}
 	}
